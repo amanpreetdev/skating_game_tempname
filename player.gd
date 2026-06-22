@@ -1,6 +1,8 @@
 extends CharacterBody2D
 
-@export var speed = 300.0
+@export var max_speed = 400.0
+@export var acceleration = 800.0
+@export var friction = 200.0
 
 func _physics_process(delta):
 	var direction = Vector2.ZERO
@@ -19,6 +21,12 @@ func _physics_process(delta):
 
 	direction = direction.normalized()
 
-	velocity = direction * speed
+	if direction != Vector2.ZERO:
+		velocity += direction * acceleration * delta
+
+		if velocity.length() > max_speed:
+			velocity = velocity.normalized() * max_speed
+	else:
+		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
 
 	move_and_slide()
